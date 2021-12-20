@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="pro_forma_invoice_inherit" model="ir.ui.view">
+            <field name="name">pro.forma.invoice.print</field>
+            <field name="model">pro.forma.invoice</field>
+            <field name="inherit_id" ref="pro_forma_invoice.pro_forma_invoice_form"/>
+            <field name="arch" type="xml">
+                <!-- add state field in header -->
+                <xpath expr="//field[@name='invoice_date']" position="after">
+                    <field name="company_bank_id"/>
+                    <field name="po_number"/>
+                    <field name="po_date"/>
+                    <field name="delivery_note_number"/>
+                    <field name="delivery_location"/>
+                </xpath>
+
+
+            </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="account_payment_inherit_pro_forma_invoce" model="ir.ui.view">
+        <field name="name">Account Payment Pro Forma</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="pro_invoice_id" attrs="{'invisible':[('pro_invoice_visibility','=',False)]}"/>
+                <field name="pro_invoice_visibility" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="einvoice_admin_default_tree" model="ir.ui.view">
+        <field name="name">Pro Forma Invoice</field>
+        <field name="model">pro.forma.invoice</field>
+        <field name="arch" type="xml">
+            <tree string="Pro Forma Invoice">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="invoice_date"/>
+                <field name="invoice_due_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="pro_forma_invoice_form" model="ir.ui.view">
+        <field name="name">Pro.Forma Invoice</field>
+        <field name="model">pro.forma.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Pro Forma Invoice">
+                <header>
+                    <button name="pro_forma_done" type="object" class="oe_highlight" string="Confirm"
+                            attrs="{'invisible':[('state','=','done')]}"/>
+                    <button name="create_advance_payment" type="object" class="oe_highlight" string="Advance Payment" attrs="{'invisible':['|',('state','=','draft'),('advance_bool','=',True)]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box" attrs="{'invisible':[('advance_bool','=',False)]}">
+                        <button type="object" name="view_advance" class="oe_stat_button" icon="fa-pencil-square-o"
+                                string="Advance"
+                                />
+                    </div>
+                    <label for="name"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" attrs="{'readonly':[('state','=','done')]}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="payment_reference"/>
+                            <field name="partner_bank_id"/>
+                            <field name="advance_bool" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="invoice_date"/>
+                            <field name="arabic_date"/>
+                            <label for="invoice_payment_term_id" string="Due Date"/>
+                            <div class="d-flex">
+                                <field name="invoice_due_date" placeholder="Date"
+                                       attrs="{'invisible': [('invoice_payment_term_id', '!=', False)]}"/>
+                                <span class="o_form_label mx-3 oe_edit_only"
+                                      attrs="{'invisible': [('invoice_payment_term_id', '!=', False)]}">or
+                                </span>
+                                <field name="invoice_payment_term_id" placeholder="Terms"/>
+                            </div>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Invoice Lines">
+                            <field name="invoice_line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="vat_category"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="discount" string="Discount(%)" groups="product.group_discount_per_so_line"/>
+                                    <field name="tax_ids" widget="many2many_tags"
+                                           domain="[('type_tax_use','=','sale')]"/>
+                                    <field name="price_subtotal"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                 <field name="discount" required="0" groups="product.group_discount_per_so_line"/>
+                                <field name="amount_untaxed" required="0"/>
+                                <field name="ar_discount" required="0" invisible="1"/>
+                                <field name="advance_amount" required="0"/>
+                                <field name="ar_amount_untaxed" required="0" invisible="1"/>
+                                <field name="amount_tax" required="0"/>
+                                <field name="ar_amount_tax" required="0" invisible="1"/>
+                                <field name="amount_total" required="0"/>
+                                <field name="ar_amount_total" required="0" invisible="1"/>
+                                <field name="amount_total_word_ar" required="0"/>
+<!--                                <field name="amount_residual" class="oe_subtotal_footer_separator"-->
+<!--                                       attrs="{'invisible': [('state', '=', 'draft')]}"/>-->
+                            </group>
+                        </page>
+                        <page string="E Invoice Information">
+                            <group>
+                                <field name="datetime_field"/>
+                                <field name="decoded_data"/>
+                                <field name="qr_image" widget="image" width="200px;" height="200px;"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="pro_forma_invoice_action" model="ir.actions.act_window">
+        <field name="name">Pro Forma Invoice</field>
+        <field name="res_model">pro.forma.invoice</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Pro Forma Invoice Created!
+            </p>
+        </field>
+    </record>
+    <menuitem name="Pro Forma" id="pro_forma_main" parent="account.menu_finance_receivables"
+              action="pro_forma_invoice_action"/>
+</odoo>

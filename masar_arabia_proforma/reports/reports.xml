@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="paperformat_a4" model="report.paperformat">
+    <field name="name">A4</field>
+    <field name="default" eval="True" />
+    <field name="format">A4</field>
+    <field name="page_height">0</field>
+    <field name="page_width">0</field>
+    <field name="orientation">Portrait</field>
+<!--    <field name="margin_top">110</field>-->
+    <field name="margin_top">110</field>
+    <field name="margin_bottom">30</field>
+    <field name="margin_left">9</field>
+    <field name="margin_right">9</field>
+    <field name="header_line" eval="False" />
+<!--    <field name="header_spacing">105</field>-->
+    <field name="header_spacing">105</field>
+    <field name="dpi">90</field>
+	</record>
+
+
+    <report id="masar_arabic_pro_forma_einvoice_report_1"
+      		model="pro.forma.invoice"
+      		string="Pro-Forma Invoice"
+      		report_type="qweb-pdf"
+      		name="masar_arabia_proforma.masar_arabia_einvoice_report_view_1"
+      		file="masar_arabia_proforma.masar_arabia_einvoice_report_view_1"
+			paperformat="masar_arabia_proforma.paperformat_a4"/>
+
+
+
+</odoo>
